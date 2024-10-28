@@ -7,6 +7,8 @@ By knowing what offices are having problems, this helps USPS and its customers.
 USPS is able to focus on the problematic offices and increase their overall success frequency. 
 The AI solution can also have a consumer version so customers can select better offices near their shipping destination to ship to and have their mail successfully shipped more often. 
 
+---
+
 Data source: https://spm.usps.com/
 <br>Enter any zip code.
 <br>Press Enter.
