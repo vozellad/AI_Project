@@ -1,39 +1,9 @@
 import pandas as pd
-import numpy as np
 import seaborn as sns
 import matplotlib.pyplot as plt
 
 
-def show_general_characteristics(column_title):
-    # center
-    mean = df[column_title].mean()
-    median = df[column_title].median()
-    print("Centers:")
-    print(f"Mean: {mean}")
-    print(f"Median: {median}")
-
-    # spread
-    variance = df[column_title].var()
-    std_dev = df[column_title].std()
-    iqr = np.percentile(df[column_title], 75) - np.percentile(df[column_title], 25)
-    print("\nMeasures of Spread:")
-    print(f"Variance: {variance}")
-    print(f"Standard Deviation: {std_dev}")
-    print(f"IQR: {iqr}")
-
-    # modality
-    mode = df[column_title].mode().values
-    print(f"Mode: {mode}")
-
-    # outliers
-    q = np.percentile(df[column_title], 25)
-    q3 = np.percentile(df[column_title], 75)
-    iqr = q3 - q
-    lower_bound = q - 1.5 * iqr
-    upper_bound = q3 + 1.5 * iqr
-    outliers = df[(df[column_title] < lower_bound) | (df[column_title] > upper_bound)]
-    print(outliers if not outliers.empty else None)
-
+def visualize_data(column_title):
     # shape
     plt.figure(figsize=(12, 5))
 
@@ -74,7 +44,7 @@ df.dropna(how='all', inplace=True)
 output_filename = "cleaned_data.xlsx"
 df.to_csv(output_filename, index=False)
 
-# show_general_characteristics('score')
-# show_general_characteristics('avg_days_to_delr')
+visualize_data('score')
+visualize_data('avg_days_to_delr')
 
 print(df.describe())
