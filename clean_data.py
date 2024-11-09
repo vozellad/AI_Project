@@ -41,8 +41,6 @@ def visualize_data(df):
 
 
 def iqr_processing(df):
-    variance = df.var()
-    std_dev = df.std()
     q1 = df.quantile(0.25)
     q3 = df.quantile(0.75)
     iqr = q3 - q1
