@@ -47,18 +47,12 @@ def iqr_processing(df):
     q3 = df.quantile(0.75)
     iqr = q3 - q1
 
-    print('Variance:')
-    print(variance, '\n')
-    print('Standard Deviation:')
-    print(std_dev, '\n')
-    print('Inter-quartile Range (IQR):')
-    print(iqr, '\n')
-
-    print('\n\n')
+    print(f'Variance:\n{df.var()}\n')
+    print(f'Standard Deviation:\n{df.std()}\n')
+    print(f'Inter-quartile Range:\n{iqr}\n\n')
 
     outliers = df[(df < (q1 - 1.5 * iqr)) | (df > (q3 + 1.5 * iqr))]
-    print("Outliers:")
-    print(outliers)
+    print(f'Outliers:\n{outliers}\n\n')
     outliers.to_csv("outliers.xlsx", index=False)
 
 
