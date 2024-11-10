@@ -1,4 +1,5 @@
 # This project currently outputs to terminal within functions
+from dataclasses import dataclass
 
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -9,6 +10,27 @@ from sklearn.linear_model import LinearRegression
 from sklearn.metrics import accuracy_score, confusion_matrix, classification_report, mean_absolute_error, r2_score, \
     mean_squared_error
 from sklearn.preprocessing import LabelEncoder, StandardScaler
+
+
+@dataclass
+class DataSplits:
+    X_train: any
+    X_test: any
+    y_train: any
+    y_test: any
+
+
+def prepare_data(df):
+    X = df.drop(columns=['Target'])  # features
+    y = df['Target']
+
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=0)
+
+    scaler = StandardScaler()
+    X_train = scaler.fit_transform(X_train)
+    X_test = scaler.transform(X_test)
+
+    return DataSplits(X_train, X_test, y_train, y_test)
 
 
 def clean_data(df):
@@ -57,26 +79,26 @@ def iqr_processing(df):
     outliers.to_csv("outliers.xlsx", index=False)
 
 
-def eval_classification(model, X_train, X_test, y_train, y_test):
-    model.fit(X_train, y_train)
-    y_pred = model.predict(X_test)
+def eval_classification(model, data):
+    model.fit(data.X_train, data.y_train)
+    y_pred = model.predict(data.X_test)
 
-    accuracy = accuracy_score(y_test, y_pred)
-    conf_matrix = confusion_matrix(y_test, y_pred)
-    class_report = classification_report(y_test, y_pred)
+    accuracy = accuracy_score(data.y_test, y_pred)
+    conf_matrix = confusion_matrix(data.y_test, y_pred)
+    class_report = classification_report(data.y_test, y_pred)
 
     print(f'Accuracy: {accuracy}\n')
     print(f'Confusion Matrix:\n{conf_matrix}\n')
     print(f'Classification Report:\n{class_report}\n')
 
 
-def eval_regression(model, X_train, X_test, y_train, y_test):
-    model.fit(X_train, y_train)
-    y_pred = model.predict(X_test)
+def eval_regression(model, data):
+    model.fit(data.X_train, data.y_train)
+    y_pred = model.predict(data.X_test)
 
-    mae = mean_absolute_error(y_test, y_pred)
-    mse = mean_squared_error(y_test, y_pred)
-    r2 = r2_score(y_test, y_pred)
+    mae = mean_absolute_error(data.y_test, y_pred)
+    mse = mean_squared_error(data.y_test, y_pred)
+    r2 = r2_score(data.y_test, y_pred)
 
     print(f'Mean Absolute Error (MAE): {mae}')
     print(f'Mean Squared Error (MSE): {mse}')
@@ -93,16 +115,11 @@ def main():
     visualize_data(df)
     print(df.describe())
 
-    X = df.drop(columns=['Target'])  # features
-    y = df['Target']
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=0)
-    scaler = StandardScaler()
-    X_train = scaler.fit_transform(X_train)
-    X_test = scaler.transform(X_test)
+    data_splits = prepare_data(df)
 
-    eval_classification(LogisticRegression(), X_train, X_test, y_train, y_test)
-    eval_regression(LinearRegression(), X_train, X_test, y_train, y_test)
-    eval_classification(RandomForestClassifier(random_state=0), X_train, X_test, y_train, y_test)
+    eval_classification(LogisticRegression(), data_splits)
+    eval_regression(LinearRegression(), data_splits)
+    eval_classification(RandomForestClassifier(random_state=0), data_splits)
 
 
 if __name__ == '__main__':
