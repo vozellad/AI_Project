@@ -1,6 +1,7 @@
 # This project currently outputs to terminal within functions
 from dataclasses import dataclass
 
+import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 from sklearn.ensemble import RandomForestClassifier
@@ -10,10 +11,13 @@ from sklearn.linear_model import LinearRegression
 from sklearn.metrics import accuracy_score, confusion_matrix, classification_report, mean_absolute_error, r2_score, \
     mean_squared_error
 from sklearn.preprocessing import LabelEncoder, StandardScaler
+import seaborn as sns
 
 
 @dataclass
 class DataSplits:
+    X: any
+    y: any
     X_train: any
     X_test: any
     y_train: any
@@ -30,7 +34,7 @@ def prepare_data(df):
     X_train = scaler.fit_transform(X_train)
     X_test = scaler.transform(X_test)
 
-    return DataSplits(X_train, X_test, y_train, y_test)
+    return DataSplits(X, y, X_train, X_test, y_train, y_test)
 
 
 def clean_data(df):
@@ -79,7 +83,7 @@ def iqr_processing(df):
     outliers.to_csv("outliers.xlsx", index=False)
 
 
-def eval_classification(model, data):
+def eval_classification(model, data, random_forest=False):
     model.fit(data.X_train, data.y_train)
     y_pred = model.predict(data.X_test)
 
@@ -88,8 +92,12 @@ def eval_classification(model, data):
     class_report = classification_report(data.y_test, y_pred)
 
     print(f'Accuracy: {accuracy}\n')
-    print(f'Confusion Matrix:\n{conf_matrix}\n')
     print(f'Classification Report:\n{class_report}\n')
+
+    plot_confusion_matrix(conf_matrix)
+
+    if random_forest:
+        plot_feature_importance(model, data.X.columns)
 
 
 def eval_regression(model, data):
@@ -103,6 +111,47 @@ def eval_regression(model, data):
     print(f'Mean Absolute Error (MAE): {mae}')
     print(f'Mean Squared Error (MSE): {mse}')
     print(f'R-squared (R²): {r2}')
+
+    plot_residuals(data.y_test, y_pred)
+
+
+def plot_confusion_matrix(matrix):
+    plt.figure(figsize=(8, 6))
+    sns.heatmap(matrix, annot=True, fmt="d", cmap="Blues", cbar=False)
+    plt.xlabel('Predicted Labels')
+    plt.ylabel('True Labels')
+    plt.title('Confusion Matrix')
+    plt.show()
+
+
+def plot_residuals(y_test, y_pred):
+    residuals = y_test - y_pred
+    plt.figure(figsize=(8, 6))
+    plt.scatter(y_pred, residuals, color='purple', alpha=0.5)
+    plt.axhline(y=0, color='red', linestyle='--')
+    plt.xlabel('Predicted Values')
+    plt.ylabel('Residuals')
+    plt.title('Residual Plot for Linear Regression')
+    plt.show()
+
+
+def plot_feature_importance(model, feature_names):
+    importances = model.feature_importances_
+    indices = np.argsort(importances)[::-1]
+
+    plt.figure(figsize=(10, 8))
+    plt.title('Feature Importances')
+
+    positions = range(len(importances))
+    plt.bar(positions, importances[indices], color='b', align='center')
+
+    sorted_feature_names = [feature_names[i] for i in indices]
+    plt.xticks(positions, sorted_feature_names, rotation=90)
+
+    plt.xlabel('Feature')
+    plt.ylabel('Importance')
+    plt.show()
+
 
 
 def main():
@@ -119,7 +168,7 @@ def main():
 
     eval_classification(LogisticRegression(), data_splits)
     eval_regression(LinearRegression(), data_splits)
-    eval_classification(RandomForestClassifier(random_state=0), data_splits)
+    eval_classification(RandomForestClassifier(random_state=0), data_splits, True)
 
 
 if __name__ == '__main__':
