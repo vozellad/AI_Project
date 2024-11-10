@@ -1,5 +1,8 @@
+# This project currently outputs to terminal within functions
+
 import pandas as pd
 import matplotlib.pyplot as plt
+from sklearn.ensemble import RandomForestClassifier
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LogisticRegression
 from sklearn.linear_model import LinearRegression
@@ -54,10 +57,10 @@ def iqr_processing(df):
     outliers.to_csv("outliers.xlsx", index=False)
 
 
-def perform_logistic_regression(X_train, X_test, y_train, y_test):
-    model = LogisticRegression()
+def eval_classification(model, X_train, X_test, y_train, y_test):
     model.fit(X_train, y_train)
     y_pred = model.predict(X_test)
+
     accuracy = accuracy_score(y_test, y_pred)
     conf_matrix = confusion_matrix(y_test, y_pred)
     class_report = classification_report(y_test, y_pred)
@@ -67,12 +70,10 @@ def perform_logistic_regression(X_train, X_test, y_train, y_test):
     print(f'Classification Report:\n{class_report}\n')
 
 
-def perform_linear_regression(X_train, X_test, y_train, y_test):
-    model = LinearRegression()
+def eval_regression(model, X_train, X_test, y_train, y_test):
     model.fit(X_train, y_train)
     y_pred = model.predict(X_test)
 
-    # Calculate metrics
     mae = mean_absolute_error(y_test, y_pred)
     mse = mean_squared_error(y_test, y_pred)
     r2 = r2_score(y_test, y_pred)
@@ -99,8 +100,9 @@ def main():
     X_train = scaler.fit_transform(X_train)
     X_test = scaler.transform(X_test)
 
-    perform_logistic_regression(X_train, X_test, y_train, y_test)
-    perform_linear_regression(X_train, X_test, y_train, y_test)
+    eval_classification(LogisticRegression(), X_train, X_test, y_train, y_test)
+    eval_regression(LinearRegression(), X_train, X_test, y_train, y_test)
+    eval_classification(RandomForestClassifier(random_state=0), X_train, X_test, y_train, y_test)
 
 
 if __name__ == '__main__':
