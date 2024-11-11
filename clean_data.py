@@ -1,17 +1,17 @@
 # This project currently outputs to terminal within functions
 from dataclasses import dataclass
 
-import numpy as np
-import pandas as pd
 import matplotlib.pyplot as plt
+import pandas as pd
+import seaborn as sns
 from sklearn.ensemble import RandomForestClassifier
-from sklearn.model_selection import train_test_split
-from sklearn.linear_model import LogisticRegression
 from sklearn.linear_model import LinearRegression
+from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import accuracy_score, confusion_matrix, classification_report, mean_absolute_error, r2_score, \
     mean_squared_error
-from sklearn.preprocessing import LabelEncoder, StandardScaler
-import seaborn as sns
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
+from sklearn.tree import plot_tree
 
 
 @dataclass
@@ -28,7 +28,7 @@ def prepare_data(df):
     X = df.drop(columns=['Target'])  # features
     y = df['Target']
 
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=0)
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)
 
     scaler = StandardScaler()
     X_train = scaler.fit_transform(X_train)
@@ -83,7 +83,7 @@ def iqr_processing(df):
     outliers.to_csv("outliers.xlsx", index=False)
 
 
-def eval_classification(model, data, random_forest=False):
+def eval_classification(model, data):
     model.fit(data.X_train, data.y_train)
     y_pred = model.predict(data.X_test)
 
@@ -94,10 +94,9 @@ def eval_classification(model, data, random_forest=False):
     print(f'Accuracy: {accuracy}\n')
     print(f'Classification Report:\n{class_report}\n')
 
-    plot_confusion_matrix(conf_matrix)
-
-    if random_forest:
+    if isinstance(model, RandomForestClassifier):
         plot_feature_importance(model, data.X.columns)
+        plot_first_tree(model, data)
 
 
 def eval_regression(model, data):
@@ -118,8 +117,8 @@ def eval_regression(model, data):
 def plot_confusion_matrix(matrix):
     plt.figure(figsize=(8, 6))
     sns.heatmap(matrix, annot=True, fmt="d", cmap="Blues", cbar=False)
-    plt.xlabel('Predicted Labels')
-    plt.ylabel('True Labels')
+    plt.xlabel('Predicted')
+    plt.ylabel('Actual')
     plt.title('Confusion Matrix')
     plt.show()
 
@@ -157,7 +156,7 @@ def plot_feature_importance(model, feature_names):
 def main():
     filename = "Predict Student Dropout and Academic Success.csv"
     df = pd.read_csv(filename, delimiter=';')
-    clean_data(df)
+    df = clean_data(df)
     df.to_csv("cleaned_data.xlsx", index=False)
 
     iqr_processing(df)
@@ -168,7 +167,7 @@ def main():
 
     eval_classification(LogisticRegression(), data_splits)
     eval_regression(LinearRegression(), data_splits)
-    eval_classification(RandomForestClassifier(random_state=0), data_splits, True)
+    eval_classification(RandomForestClassifier(), data_splits)
 
 
 if __name__ == '__main__':
