@@ -50,7 +50,8 @@ def clean_data(df):
     df = df[df['Target'] != 'Enrolled']
 
     # Change classified text under ‘Target’ column to be integers.
-    df['Target'] = LabelEncoder().fit_transform(df['Target'])
+    pd.set_option('future.no_silent_downcasting', True)
+    df.loc[:, 'Target'] = df['Target'].replace({'Dropout': 0, 'Graduate': 1})
 
     # Strip leading and trailing white-spaces.
     df = df.map(lambda x: x.strip() if isinstance(x, str) else x)
