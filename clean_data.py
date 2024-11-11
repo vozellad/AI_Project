@@ -96,6 +96,7 @@ def eval_classification(model, data):
     conf_matrix = confusion_matrix(data.y_test, y_pred)
     class_report = classification_report(data.y_test, y_pred)
 
+    plot_confusion_matrix(conf_matrix)
     print(f'Accuracy: {accuracy}\n')
     print(f'Classification Report:\n{class_report}\n')
 
@@ -154,6 +155,14 @@ def plot_feature_importance(model, feature_names):
     plt.subplots_adjust(left=0.3)
     plt.show()
 
+
+def plot_first_tree(model, data):
+    plt.figure(figsize=(20, 10))
+    class_names = list(map(str, data.y.unique()))
+    plot_tree(model.estimators_[0], filled=True, feature_names=data.X.columns, class_names=class_names)
+    plt.title('First Decision Tree in Random Forest')
+    plt.show()
+    print('done')
 
 
 def main():
