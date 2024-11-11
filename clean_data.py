@@ -45,6 +45,10 @@ def clean_data(df):
     # Remove duplicates.
     df.drop_duplicates(inplace=True)
 
+    # This project is analyzing whether they dropped out or graduated.
+    # If they’re still taking classes, their data is incomplete.
+    df = df[df['Target'] != 'Enrolled']
+
     # Change classified text under ‘Target’ column to be integers.
     df['Target'] = LabelEncoder().fit_transform(df['Target'])
 
