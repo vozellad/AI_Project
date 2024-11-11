@@ -8,8 +8,9 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.linear_model import LinearRegression
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import accuracy_score, confusion_matrix, classification_report, mean_absolute_error, r2_score, \
-    mean_squared_error
+    mean_squared_error, pairwise_distances
 from sklearn.model_selection import train_test_split
+from sklearn.neighbors import KNeighborsClassifier
 from sklearn.preprocessing import StandardScaler
 from sklearn.tree import plot_tree
 
@@ -105,7 +106,15 @@ def eval_classification(model, data, title):
 
     if isinstance(model, RandomForestClassifier):
         plot_feature_importance(model, data.X.columns, title)
-        plot_first_tree(model, data, title)
+
+    if isinstance(model, KNeighborsClassifier):
+        plot_distance_heatmap(data, title)
+
+
+def plot_distance_heatmap(data, title):
+    sns.heatmap(pairwise_distances(data.X_train), cmap='YlGnBu', annot=False)
+    plt.title(f'Distance Matrix for Training Data {title}')
+    plt.show()
 
 
 def eval_regression(model, data, title):
@@ -192,10 +201,10 @@ def main():
 
     print('\n\nLOGISTIC REGRESSION')
     eval_classification(LogisticRegression(), data_splits, 'Logistic Regression')
-    print('LINEAR REGRESSION')
-    eval_regression(LinearRegression(), data_splits, 'Linear Regression')
-    print('\n\nRANDOM FOREST')
+    print('\nRANDOM FOREST')
     eval_classification(RandomForestClassifier(), data_splits, 'Random Forest')
+    print('\nKNN')
+    eval_classification(KNeighborsClassifier(), data_splits, 'KNN')
 
 
 if __name__ == '__main__':
