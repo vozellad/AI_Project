@@ -135,20 +135,18 @@ def plot_residuals(y_test, y_pred):
 
 
 def plot_feature_importance(model, feature_names):
-    importances = model.feature_importances_
-    indices = np.argsort(importances)[::-1]
+    feature_importances = pd.DataFrame({
+        'Feature': feature_names,
+        'Importance': model.feature_importances_
+    })
+    feature_importances = feature_importances.sort_values(by='Importance')
 
-    plt.figure(figsize=(10, 8))
+    plt.figure(figsize=(12, 10))
     plt.title('Feature Importances')
-
-    positions = range(len(importances))
-    plt.bar(positions, importances[indices], color='b', align='center')
-
-    sorted_feature_names = [feature_names[i] for i in indices]
-    plt.xticks(positions, sorted_feature_names, rotation=90)
-
-    plt.xlabel('Feature')
-    plt.ylabel('Importance')
+    sns.barplot(x='Importance', y='Feature', data=feature_importances, palette='Blues_d', hue='Feature')
+    plt.xlabel('Importance')
+    plt.ylabel('Feature')
+    plt.subplots_adjust(left=0.3)
     plt.show()
 
 
