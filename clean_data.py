@@ -1,4 +1,6 @@
 # This project currently outputs to terminal within functions
+
+
 from dataclasses import dataclass
 
 import matplotlib.pyplot as plt
@@ -85,8 +87,7 @@ def iqr_processing(df):
     print(f'Inter-quartile Range:\n{iqr}\n\n')
 
     outliers = df[(df < (q1 - 1.5 * iqr)) | (df > (q3 + 1.5 * iqr))]
-    print(f'Outliers:\n{outliers}\n\n')
-    outliers.to_csv("outliers.xlsx", index=False)
+    return outliers
 
 
 def eval_classification(model, data, title):
@@ -193,17 +194,19 @@ def main():
     df = clean_data(df)
     df.to_csv("cleaned_data.xlsx", index=False)
 
-    iqr_processing(df)
+    outliers = iqr_processing(df)
+    outliers.to_csv("outliers.xlsx", index=False)
     visualize_data(df)
-    print(df.describe())
+    describe = df.describe()
+    describe.to_csv('describe_data.xlsx')
 
     data_splits = prepare_data(df)
 
-    print('\n\nLOGISTIC REGRESSION')
+    print('LOGISTIC REGRESSION')
     eval_classification(LogisticRegression(), data_splits, 'Logistic Regression')
-    print('\nRANDOM FOREST')
+    print('RANDOM FOREST')
     eval_classification(RandomForestClassifier(), data_splits, 'Random Forest')
-    print('\nKNN')
+    print('KNN')
     eval_classification(KNeighborsClassifier(), data_splits, 'KNN')
 
 
