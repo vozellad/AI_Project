@@ -64,6 +64,7 @@ def clean_data(df):
 
     # Replace missing values with the mean.
     df.fillna(df.mean(), inplace=True)
+    # chose mean because it's sensitive to every value. preserves the overall distribution and variance of the data.
 
     # Set proper precision.
     df = df.round(3)
