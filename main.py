@@ -88,6 +88,7 @@ def iqr_processing(df):
     print(f'Inter-quartile Range:\n{iqr}\n\n')
 
     outliers = df[(df < (q1 - 1.5 * iqr)) | (df > (q3 + 1.5 * iqr))]
+    # 1.5 is a standard threshold that balances sensitivity to potential outliers with the risk of overfitting
     return outliers
 
 
