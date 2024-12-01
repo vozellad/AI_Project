@@ -214,3 +214,16 @@ def main():
 
 if __name__ == '__main__':
     main()
+
+
+# Decision trees are highly sensitive to training data, resulting in high variance.
+#
+# “forest” because it uses multiple trees
+#
+# randomly build multiple new datasets by randomly (“random”) selecting data
+# called bootstrapping
+# ensures we don’t use same data for every tree
+#
+# aggregation - combining predictions from multiple decision trees - majority voting
+#
+# last two together is called bagging
