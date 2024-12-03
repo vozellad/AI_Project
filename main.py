@@ -3,6 +3,7 @@
 
 from dataclasses import dataclass
 
+import joblib
 import matplotlib.pyplot as plt
 import pandas as pd
 import seaborn as sns
@@ -114,6 +115,10 @@ def eval_classification(model, data, title):
         plot_distance_heatmap(data, title)
         plot_distance_heatmap_curricular_units(data, title)
 
+    # Save the trained model
+    model_filename = f"{title.replace(' ', '_').lower()}_model.pkl"
+    joblib.dump(model, model_filename)
+
 
 def plot_distance_heatmap(data, title):
     sns.heatmap(pairwise_distances(data.X_train), cmap='YlGnBu', annot=False)
@@ -143,6 +148,10 @@ def eval_regression(model, data, title):
     print(f'R-squared (R²): {r2}')
 
     plot_residuals(data.y_test, y_pred, title)
+
+    # Save the trained model
+    model_filename = f"{title.replace(' ', '_').lower()}_model.pkl"
+    joblib.dump(model, model_filename)
 
 
 def plot_confusion_matrix(matrix, title):
