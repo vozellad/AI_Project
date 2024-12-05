@@ -1,18 +1,28 @@
-from flask import Flask, render_template, request
-import joblib
-import numpy as np
+from zipfile import BadZipFile
+from flask import Flask, request, render_template
+import pandas as pd
+import openpyxl  # engine used in 'pd.read_excel'
 
 app = Flask(__name__)
-model = joblib.load('logistic_regression_model.pkl')
+
+
 @app.route('/', methods=['GET', 'POST'])
-def index():
-    if request.method == 'GET':
-        return render_template('index.html', prediction=None)
-    # Get form data from user
-    data = [float(request.form['feature1']), float(request.form['feature2'])]
-    input_data = np.array(data).reshape(1, -1)
-    prediction = model.predict(input_data)
-    return render_template('index.html', prediction=prediction)
+def upload_file():
+    table_html = None
+    if request.method == 'POST':
+        if 'file' not in request.files:
+            return 'No file part in the request', 400
+        file = request.files['file']
+        if file.filename == '':
+            return 'No file selected', 400
+        if file:
+            try:
+                df = pd.read_excel('temp.xlsx', engine='openpyxl')
+            except BadZipFile:
+                df = pd.read_csv('temp.xlsx')
+            table_html = df.to_html(classes='table table-striped')
+
+    return render_template('index.html', prediction=table_html)
 
 
 if __name__ == '__main__':
