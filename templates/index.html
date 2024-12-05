@@ -7,14 +7,13 @@
 </head>
 <body>
   <h1>Enter Data to Test Model</h1>
-  <form method="POST">
-    Feature 1: <input type="text" name="feature1"><br>
-    Feature 2: <input type="text" name="feature2"><br>
-    <input type="submit" value="Submit">
+  <form method="POST" enctype="multipart/form-data">
+    <input type="file" name="file" id="file-upload" accept=".xlsx, .xls, .csv"><br><br>
+    <input type="submit" value="Process Data" id="data-submit">
   </form>
 
   {% if prediction %}
-  <h2>Prediction: {{ prediction }}</h2>
+  <h2>Prediction: {{ prediction|safe }}</h2>
   {% endif %}
 </body>
 </html>
