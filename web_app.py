@@ -30,10 +30,13 @@ def upload_file():
                 df = pd.read_excel(file.filename, engine='openpyxl')
             except BadZipFile:
                 df = pd.read_csv(file.filename)
-            table_html = df.to_html(classes='table table-striped')
-            results = process_and_get_visualized_data(df)
+            try:
+                results = process_and_get_visualized_data(df)
+            except ValueError as e:
+                return render_template('index.html', error_message=e)
             outputs = results
             plots = results["plots"]
+            table_html = results['df'].to_html(classes='table table-striped')
 
     return render_template(
         'index.html',
@@ -53,7 +56,8 @@ def process_and_get_visualized_data(df):
     rf_output = eval_classification(RandomForestClassifier(), data_splits, 'Random Forest')
     knn_output = eval_classification(KNeighborsClassifier(), data_splits, 'KNN')
     return {
-        "output": output,
+        "df": df,
+        "output": output,  # TODO: output everything else
         "lr_output": lr_output,
         "rf_output": rf_output,
         "knn_output": knn_output,

@@ -12,6 +12,12 @@
     <input type="submit" value="Process Data" id="data-submit">
   </form>
 
+  {% if error_message %}
+    <div class="alert alert-danger">
+        <strong>Error:</strong> {{ error_message }}
+    </div>
+  {% endif %}
+
   {% if outputs %}
   <h2>Processing Outputs:</h2>
   <ul>

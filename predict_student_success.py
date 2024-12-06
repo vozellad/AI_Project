@@ -32,8 +32,15 @@ def clean_data(df):
     df.fillna(df.mean(), inplace=True)
     # chose mean because it's sensitive to every value. preserves the overall distribution and variance of the data.
 
+    # For columns with no values to get an average, add 0 to empty rows
+    df.fillna(0, inplace=True)
+
     # Set proper precision.
     df = df.round(3)
+
+    # Ensure there are at least 2 unique classes in the 'Target' column
+    if df['Target'].nunique() < 2:
+        raise ValueError("The 'Target' column contains less than 2 classes. Logistic regression cannot be performed.")
 
     return df
 
