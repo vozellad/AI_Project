@@ -17,6 +17,8 @@ app = Flask(__name__)
 @app.route('/', methods=['GET', 'POST'])
 def upload_file():
     table_html = None
+    plots = []
+    outputs = {}
     if request.method == 'POST':
         if 'file' not in request.files:
             return 'No file part in the request', 400
@@ -25,13 +27,20 @@ def upload_file():
             return 'No file selected', 400
         if file:
             try:
-                df = pd.read_excel('temp.xlsx', engine='openpyxl')
+                df = pd.read_excel(file.filename, engine='openpyxl')
             except BadZipFile:
-                df = pd.read_csv('temp.xlsx')
+                df = pd.read_csv(file.filename)
             table_html = df.to_html(classes='table table-striped')
-            process_and_get_visualized_data(df)
+            results = process_and_get_visualized_data(df)
+            outputs = results
+            plots = results["plots"]
 
-    return render_template('index.html', prediction=table_html)
+    return render_template(
+        'index.html',
+        prediction=table_html,
+        outputs=outputs,
+        plots=plots
+    )
 
 
 def process_and_get_visualized_data(df):
@@ -49,7 +58,7 @@ def process_and_get_visualized_data(df):
         "rf_output": rf_output,
         "knn_output": knn_output,
         "describe": describe.to_html(classes='table table-striped'),
-        "plots": [f"plots/{filename}" for filename in os.listdir("plots")]
+        "plots": [filename for filename in os.listdir(os.path.join('static', 'plots'))]
     }
 
 
