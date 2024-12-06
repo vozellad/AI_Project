@@ -74,7 +74,7 @@ def eval_classification(model, data, title):
     return f'Accuracy: {accuracy}\n'
 
 
-def eval_regression(model, data, title, output=[]):
+def eval_regression(model, data, title):
     model.fit(data.X_train, data.y_train)
     y_pred = model.predict(data.X_test)
 
@@ -82,9 +82,9 @@ def eval_regression(model, data, title, output=[]):
     mse = mean_squared_error(data.y_test, y_pred)
     r2 = r2_score(data.y_test, y_pred)
 
-    output.append(f'Mean Absolute Error (MAE): {mae}')
-    output.append(f'Mean Squared Error (MSE): {mse}')
-    output.append(f'R-squared (R²): {r2}')
+    output = '\n'.join([f'Mean Absolute Error (MAE): {mae}',
+                  f'Mean Squared Error (MSE): {mse}',
+                  f'R-squared (R²): {r2}'])
 
     plot_residuals(data.y_test, y_pred, title)
 
@@ -92,4 +92,4 @@ def eval_regression(model, data, title, output=[]):
     model_filename = f"{title.replace(' ', '_').lower()}_model.pkl"
     joblib.dump(model, model_filename)
 
-
+    return output
