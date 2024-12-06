@@ -10,13 +10,7 @@ def plot_target_pie_chart(df):
     plt.show()
 
 
-def plot_distance_heatmap(data, title):
-    sns.heatmap(pairwise_distances(data.X_train), cmap='YlGnBu', annot=False)
-    plt.title(f'Distance Matrix for Training Data {title}')
-    plt.show()
-
-
-def plot_distance_heatmap_curricular_units(data, title):
+def plot_distance_curricular_units(data, title):
     feature = 'Curricular units 2nd sem (approved)'
     plt.figure(figsize=(10, 6))
     sns.histplot(data.X[feature], bins=20, kde=True, color='blue')
