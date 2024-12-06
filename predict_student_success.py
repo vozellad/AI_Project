@@ -1,5 +1,3 @@
-# This project currently outputs to terminal within functions
-
 import pandas as pd
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.linear_model import LogisticRegression
@@ -46,7 +44,8 @@ def main():
     df = clean_data(df)
     df.to_csv("cleaned_data.xlsx", index=False)
 
-    outliers = iqr_processing(df)
+    outliers, output = iqr_processing(df)
+    print(output)
     outliers.to_csv("outliers.xlsx", index=False)
     plot_target_pie_chart(df)
     describe = df.describe()
@@ -54,12 +53,12 @@ def main():
 
     data_splits = prepare_data(df)
 
-    print('LOGISTIC REGRESSION')
-    eval_classification(LogisticRegression(), data_splits, 'Logistic Regression')
-    print('RANDOM FOREST')
-    eval_classification(RandomForestClassifier(), data_splits, 'Random Forest')
-    print('KNN')
-    eval_classification(KNeighborsClassifier(), data_splits, 'KNN')
+    output = eval_classification(LogisticRegression(), data_splits, 'Logistic Regression')
+    print(f'LOGISTIC REGRESSION\n{output}')
+    output = eval_classification(RandomForestClassifier(), data_splits, 'Random Forest')
+    print(f'RANDOM FOREST\n{output}')
+    output = eval_classification(KNeighborsClassifier(), data_splits, 'KNN')
+    print(f'KNN\n{output}')
 
 
 if __name__ == '__main__':
