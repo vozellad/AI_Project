@@ -1,3 +1,4 @@
+import os
 from zipfile import BadZipFile
 from flask import Flask, request, render_template
 import pandas as pd
@@ -28,20 +29,28 @@ def upload_file():
             except BadZipFile:
                 df = pd.read_csv('temp.xlsx')
             table_html = df.to_html(classes='table table-striped')
-            process_and_visualize_data(df)
+            process_and_get_visualized_data(df)
 
     return render_template('index.html', prediction=table_html)
 
 
-def process_and_visualize_data(df):
+def process_and_get_visualized_data(df):
     df = clean_data(df)
-    iqr_processing(df)
+    outliers, output = iqr_processing(df)
     plot_target_pie_chart(df)
-    df.describe()
+    describe = df.describe()
     data_splits = prepare_data(df)
-    eval_classification(LogisticRegression(), data_splits, 'Logistic Regression')
-    eval_classification(RandomForestClassifier(), data_splits, 'Random Forest')
-    eval_classification(KNeighborsClassifier(), data_splits, 'KNN')
+    lr_output = eval_classification(LogisticRegression(), data_splits, 'Logistic Regression')
+    rf_output = eval_classification(RandomForestClassifier(), data_splits, 'Random Forest')
+    knn_output = eval_classification(KNeighborsClassifier(), data_splits, 'KNN')
+    return {
+        "output": output,
+        "lr_output": lr_output,
+        "rf_output": rf_output,
+        "knn_output": knn_output,
+        "describe": describe.to_html(classes='table table-striped'),
+        "plots": [f"plots/{filename}" for filename in os.listdir("plots")]
+    }
 
 
 if __name__ == '__main__':
