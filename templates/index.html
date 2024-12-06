@@ -12,8 +12,28 @@
     <input type="submit" value="Process Data" id="data-submit">
   </form>
 
+  {% if outputs %}
+  <h2>Processing Outputs:</h2>
+  <ul>
+    <li>Logistic Regression:<br>{{ outputs.lr_output }}</li>
+    <li>Random Forest:<br>{{ outputs.rf_output }}</li>
+    <li>KNN:<br>{{ outputs.knn_output }}</li>
+  </ul>
+  {% endif %}
+
+  {% if plots %}
+  <h2>Generated Plots:</h2>
+  <div>
+    {% for plot in plots %}
+    <img src="{{ url_for('static', filename='plots/' + plot) }}"
+         alt="Plot" style="max-width: 100%; height: auto; margin-bottom: 20px;">
+    {% endfor %}
+  </div>
+  {% endif %}
+
   {% if prediction %}
-  <h2>Prediction: {{ prediction|safe }}</h2>
+  <h2>Uploaded Data:</h2>
+  <div>{{ prediction|safe }}</div>
   {% endif %}
 </body>
 </html>
