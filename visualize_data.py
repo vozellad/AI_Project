@@ -1,6 +1,5 @@
 import os
 import re
-
 from matplotlib import pyplot as plt
 import seaborn as sns
 import pandas as pd
@@ -63,9 +62,10 @@ def plot_feature_importance(model, feature_names, title):
 
 
 def _plot_ending(title):
-    os.makedirs('plots', exist_ok=True)
+    plots_dir = os.path.join('static', 'plots')
+    os.makedirs(plots_dir, exist_ok=True)
     title = re.sub(r'[<>:"/\\|?*\s]', '_', title)
     plt.title(title)
-    plt.savefig(f'plots/{title}.png')
+    plt.savefig(os.path.join(plots_dir, f'{title}.png'))
     plt.show()
     plt.close()
