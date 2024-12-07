@@ -18,19 +18,30 @@
     </div>
   {% endif %}
 
+  <div>
+    <h2>Jump to Content</h2>
+    <ul>
+      <li><a href="#accuracies">Accuracies</a></li>
+      <li><a href="#iqr">IQR Analysis</a></li>
+      <li><a href="#describe">Data Description</a></li>
+      <li><a href="#outliers">Outliers</a></li>
+      <li><a href="#plots">Plots</a></li>
+      <li><a href="#data">Uploaded Data</a></li>
+    </ul>
+  </div>
+
   {% if outputs %}
-    <h2>Accuracies:</h2>
+    <u><h2 id="accuracies">Accuracies:</h2></u>
     Logistic Regression:<br>{{ outputs.lr_output }}<br>
     Random Forest:<br>{{ outputs.rf_output }}<br>
     KNN:<br>{{ outputs.knn_output }}<br>
-    <h2>IQR</h2>
-    <pre>{{ outputs.iqr_output|safe }}</pre><br>
-    <h2>Data Description</h2>
-    {{ outputs.describe|safe }}<br>
+    <h2 id="iqr">IQR Analysis</h2><pre>{{ outputs.iqr_output|safe }}</pre><br>
+    <h2 id="describe">Data Description</h2>{{ outputs.describe|safe }}<br>
+    <h2 id="outliers">Outliers:</h2>{{ outputs.outliers|safe }}
   {% endif %}
 
   {% if plots %}
-    <h2>Plots:</h2>
+    <h2 id="plots">Plots:</h2>
     <div>
       {% for plot in plots %}
         <img src="{{ url_for('static', filename='plots/' + plot) }}"
@@ -40,7 +51,8 @@
   {% endif %}
 
   {% if data %}
-    <h2>Uploaded Data:</h2>
+    <h2 id="data">Uploaded Data:</h2>
+    (<i>last thing on webpage</i>)
     {{ data|safe }}
   {% endif %}
 </body>

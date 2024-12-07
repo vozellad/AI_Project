@@ -53,6 +53,7 @@ def process_and_get_visualized_data(df):
     data_splits = prepare_data(df)
     return {
         "df": df,
+        "outliers": outliers.fillna('').to_html(classes='table table-striped'),
         "iqr_output": iqr_output.replace("\n", "<br>"),
         "lr_output": eval_classification(LogisticRegression(), data_splits, 'Logistic Regression'),
         "rf_output": eval_classification(RandomForestClassifier(), data_splits, 'Random Forest'),
