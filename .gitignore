@@ -1,5 +1,6 @@
 /cleaned_data.xlsx
 /*.xlsx
+/*.xls
 /Predict Student Dropout and Academic Success.csv
 /*.csv
 /.pkl
