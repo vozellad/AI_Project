@@ -49,14 +49,14 @@ def main():
     filename = "Predict Student Dropout and Academic Success.csv"
     df = pd.read_csv(filename, delimiter=';')
     df = clean_data(df)
-    df.to_csv("cleaned_data.xlsx", index=False)
+    df.read_excel("cleaned_data.xlsx", index=False)
 
     outliers, output = iqr_processing(df)
     print(output)
-    outliers.to_csv("outliers.xlsx", index=False)
+    outliers.read_excel("outliers.xlsx", index=False)
     plot_target_pie_chart(df)
     describe = df.describe()
-    describe.to_csv('describe_data.xlsx')
+    describe.read_excel('describe_data.xlsx')
 
     data_splits = prepare_data(df)
 
