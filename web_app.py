@@ -34,9 +34,11 @@ def upload_file():
 
             df = pd.read_excel(file_path, engine='openpyxl')
         except BadZipFile:
-            df = pd.read_csv(file_path)
-        except KeyError:
-            df = pd.read_csv(file_path, delimiter=';')
+            filename = 'Predict Student Dropout and Academic Success.csv'
+            if file.filename == filename:
+                df = pd.read_csv(file_path, delimiter=';')
+            else:
+                df = pd.read_csv(file_path)
         except Exception as e:
             return render_template('index.html', error_message=e)
 
