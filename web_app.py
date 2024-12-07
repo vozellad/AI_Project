@@ -40,7 +40,7 @@ def upload_file():
 
     return render_template(
         'index.html',
-        prediction=results['df'].to_html(classes='table table-striped'),
+        data=results['df'].to_html(classes='table table-striped'),
         outputs=results,
         plots=results["plots"]
     )

@@ -19,33 +19,28 @@
   {% endif %}
 
   {% if outputs %}
-  <h2>Processing Outputs:</h2>
-  <ul>
-    <li>Logistic Regression:<br>{{ outputs.lr_output }}</li>
-    <li>Random Forest:<br>{{ outputs.rf_output }}</li>
-    <li>KNN:<br>{{ outputs.knn_output }}</li><br><br>
-    <li>{{ outputs.iqr_output }}</li><br><br>
-  </ul>
-  <div>{{ outputs.describe|safe }}</div>
-  {% endif %}
-
-  {% if output %}
-  { output }}
+    <h2>Processing Outputs:</h2>
+    Logistic Regression:<br>{{ outputs.lr_output }}
+    Random Forest:<br>{{ outputs.rf_output }}
+    KNN:<br>{{ outputs.knn_output }}<br><br>
+    <h2>IQR</h2>
+    {{ outputs.iqr_output }}<br><br>
+    {{ outputs.describe|safe }}
   {% endif %}
 
   {% if plots %}
-  <h2>Generated Plots:</h2>
-  <div>
-    {% for plot in plots %}
-    <img src="{{ url_for('static', filename='plots/' + plot) }}"
-         alt="Plot" style="max-width: 100%; height: auto; margin-bottom: 20px;">
-    {% endfor %}
-  </div>
+    <h2>Generated Plots:</h2>
+    <div>
+      {% for plot in plots %}
+        <img src="{{ url_for('static', filename='plots/' + plot) }}"
+             alt="Plot" style="max-width: 100%; height: auto; margin-bottom: 20px;">
+      {% endfor %}
+    </div>
   {% endif %}
 
-  {% if prediction %}
-  <h2>Uploaded Data:</h2>
-  <div>{{ prediction|safe }}</div>
+  {% if data %}
+    <h2>Uploaded Data:</h2>
+    <div>{{ data|safe }}</div>
   {% endif %}
 </body>
 </html>
