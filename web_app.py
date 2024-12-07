@@ -6,6 +6,7 @@ import openpyxl  # engine used in 'pd.read_excel'
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.linear_model import LogisticRegression
 from sklearn.neighbors import KNeighborsClassifier
+from werkzeug.utils import secure_filename
 
 from ai_utils import iqr_processing, prepare_data, eval_classification
 from predict_student_success import clean_data
@@ -27,11 +28,17 @@ def upload_file():
 
     if file:
         try:
-            df = pd.read_excel(file.filename, engine='openpyxl')
+            ext = file.filename.split('.')[1]  # get file extension
+            file_path = f'temp.{ext}'
+            file.save(secure_filename(file_path))
+
+            df = pd.read_excel(file_path, engine='openpyxl')
         except BadZipFile:
-            df = pd.read_csv(file.filename)
+            df = pd.read_csv(file_path)
         except KeyError:
-            df = pd.read_csv(file.filename, delimiter=';')
+            df = pd.read_csv(file_path, delimiter=';')
+        except Exception as e:
+            return render_template('index.html', error_message=e)
 
         try:
             results = process_and_get_visualized_data(df)
