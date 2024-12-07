@@ -23,8 +23,14 @@
   <ul>
     <li>Logistic Regression:<br>{{ outputs.lr_output }}</li>
     <li>Random Forest:<br>{{ outputs.rf_output }}</li>
-    <li>KNN:<br>{{ outputs.knn_output }}</li>
+    <li>KNN:<br>{{ outputs.knn_output }}</li><br><br>
+    <li>{{ outputs.iqr_output }}</li><br><br>
   </ul>
+  <div>{{ outputs.describe|safe }}</div>
+  {% endif %}
+
+  {% if output %}
+  { output }}
   {% endif %}
 
   {% if plots %}
