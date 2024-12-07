@@ -16,52 +16,48 @@ app = Flask(__name__)
 
 @app.route('/', methods=['GET', 'POST'])
 def upload_file():
-    table_html = None
-    plots = []
-    outputs = {}
-    if request.method == 'POST':
-        if 'file' not in request.files:
-            return 'No file part in the request', 400
-        file = request.files['file']
-        if file.filename == '':
-            return 'No file selected', 400
-        if file:
-            try:
-                df = pd.read_excel(file.filename, engine='openpyxl')
-            except BadZipFile:
-                df = pd.read_csv(file.filename)
-            try:
-                results = process_and_get_visualized_data(df)
-            except ValueError as e:
-                return render_template('index.html', error_message=e)
-            outputs = results
-            plots = results["plots"]
-            table_html = results['df'].to_html(classes='table table-striped')
+    if request.method == 'GET':
+        return render_template('index.html')
+
+    if 'file' not in request.files:
+        return 'No file part in the request', 400
+    file = request.files['file']
+    if file.filename == '':
+        return 'No file selected', 400
+
+    if file:
+        try:
+            df = pd.read_excel(file.filename, engine='openpyxl')
+        except BadZipFile:
+            df = pd.read_csv(file.filename)
+        except KeyError:
+            df = pd.read_csv(file.filename, delimiter=';')
+
+        try:
+            results = process_and_get_visualized_data(df)
+        except ValueError as e:
+            return render_template('index.html', error_message=e)
 
     return render_template(
         'index.html',
-        prediction=table_html,
-        outputs=outputs,
-        plots=plots
+        prediction=results['df'].to_html(classes='table table-striped'),
+        outputs=results,
+        plots=results["plots"]
     )
 
 
 def process_and_get_visualized_data(df):
     df = clean_data(df)
-    outliers, output = iqr_processing(df)
+    outliers, iqr_output = iqr_processing(df)
     plot_target_pie_chart(df)
-    describe = df.describe()
     data_splits = prepare_data(df)
-    lr_output = eval_classification(LogisticRegression(), data_splits, 'Logistic Regression')
-    rf_output = eval_classification(RandomForestClassifier(), data_splits, 'Random Forest')
-    knn_output = eval_classification(KNeighborsClassifier(), data_splits, 'KNN')
     return {
         "df": df,
-        "output": output,  # TODO: output everything else
-        "lr_output": lr_output,
-        "rf_output": rf_output,
-        "knn_output": knn_output,
-        "describe": describe.to_html(classes='table table-striped'),
+        "iqr_output": iqr_output,
+        "lr_output": eval_classification(LogisticRegression(), data_splits, 'Logistic Regression'),
+        "rf_output": eval_classification(RandomForestClassifier(), data_splits, 'Random Forest'),
+        "knn_output": eval_classification(KNeighborsClassifier(), data_splits, 'KNN'),
+        "describe": df.describe().to_html(classes='table table-striped'),
         "plots": [filename for filename in os.listdir(os.path.join('static', 'plots'))]
     }
 
