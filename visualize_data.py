@@ -20,7 +20,7 @@ def plot_distance_curricular_units(data, title):
 
 def plot_confusion_matrix(matrix, title):
     plt.figure(figsize=(8, 6))
-    sns.heatmap(matrix, annot=True, fmt="d", cmap="Blues", cbar=False)
+    sns.heatmap(matrix, annot=True, fmt='d', cmap='Blues', cbar=False)
     plt.xlabel('Predicted')
     plt.ylabel('Actual')
     _plot_ending(f'Confusion Matrix - {title}')
@@ -32,7 +32,7 @@ def plot_classification_report(report, title):
     report = report.iloc[:-1, :].T
 
     plt.figure(figsize=(8, 6))
-    sns.heatmap(report, annot=True, cmap="YlGnBu", cbar=False, fmt=".2f")
+    sns.heatmap(report, annot=True, cmap='YlGnBu', cbar=False, fmt='.2f')
     _plot_ending(f'Classification Report Heatmap - {title}')
 
 

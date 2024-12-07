@@ -49,7 +49,7 @@ def upload_file():
         'index.html',
         data=results['df'].to_html(classes='table table-striped'),
         outputs=results,
-        plots=results["plots"]
+        plots=results['plots']
     )
 
 
@@ -59,14 +59,14 @@ def process_and_get_visualized_data(df):
     plot_target_pie_chart(df)
     data_splits = prepare_data(df)
     return {
-        "df": df,
-        "outliers": outliers.fillna('').to_html(classes='table table-striped'),
-        "iqr_output": iqr_output.replace("\n", "<br>"),
-        "lr_output": eval_classification(LogisticRegression(), data_splits, 'Logistic Regression'),
-        "rf_output": eval_classification(RandomForestClassifier(), data_splits, 'Random Forest'),
-        "knn_output": eval_classification(KNeighborsClassifier(), data_splits, 'KNN'),
-        "describe": df.describe().to_html(classes='table table-striped'),
-        "plots": [filename for filename in os.listdir(os.path.join('static', 'plots'))]
+        'df': df,
+        'outliers': outliers.fillna('').to_html(classes='table table-striped'),
+        'iqr_output': iqr_output.replace('\n', '<br>'),
+        'lr_output': eval_classification(LogisticRegression(), data_splits, 'Logistic Regression'),
+        'rf_output': eval_classification(RandomForestClassifier(), data_splits, 'Random Forest'),
+        'knn_output': eval_classification(KNeighborsClassifier(), data_splits, 'KNN'),
+        'describe': df.describe().to_html(classes='table table-striped'),
+        'plots': [filename for filename in os.listdir(os.path.join('static', 'plots'))]
     }
 
 
